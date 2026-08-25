@@ -1,7 +1,7 @@
 const letterContent = "Cảm ơn em vì 5 tháng qua đã luôn ở bên anh, cùng anh trải qua những lúc vui vẻ, hạnh phúc và cả những khi không được tốt đẹp. Có thể anh chưa phải là một người hoàn hảo, đôi lúc còn vô tâm, làm em buồn hay khiến em phải suy nghĩ nhiều, nhưng anh thật sự trân trọng từng khoảnh khắc mà chúng ta đã có cùng nhau. 5 tháng có thể không phải là một khoảng thời gian quá dài, nhưng với anh, nó đủ để tạo nên rất nhiều kỷ niệm đáng nhớ. Cảm ơn em vì đã xuất hiện, đã yêu thương, quan tâm và kiên nhẫn với anh. Anh mong rằng 5 tháng vừa qua chỉ là một phần nhỏ trong hành trình thật dài của hai đứa mình, và sau này chúng ta vẫn sẽ cùng nhau tạo thêm thật nhiều kỷ niệm đẹp nữa. Anh yêu em rất nhiều";
-const durationWrite = 24;
-let typingInterval = null;
-let buttonShowTimeout = null;
+const durationWrite = 25;
+let typingTimer = null;
+let buttonShowTimer = null;
 
 const galleryImages = [
     "./img/anh/IMG_4603.jpg",
@@ -26,6 +26,15 @@ const galleryImages = [
 ];
 
 let isRainPlaying = true;
+let resizeRaf = null;
+
+function preloadGalleryImages() {
+    galleryImages.forEach((src) => {
+        const img = new Image();
+        img.decoding = "async";
+        img.src = src;
+    });
+}
 
 function updateCardScale() {
     const vw = window.innerWidth;
@@ -39,17 +48,27 @@ function updateCardScale() {
     document.documentElement.style.setProperty("--card-scale", scale.toFixed(4));
 }
 
-let resizeRaf = null;
-function onResize() {
+function throttledUpdateCardScale() {
     if (resizeRaf) cancelAnimationFrame(resizeRaf);
     resizeRaf = requestAnimationFrame(updateCardScale);
 }
 
-window.addEventListener("resize", onResize, { passive: true });
+window.addEventListener("resize", throttledUpdateCardScale, { passive: true });
 window.addEventListener("orientationchange", () => {
-    setTimeout(updateCardScale, 100);
-}, { passive: true });
+    setTimeout(updateCardScale, 150);
+});
 updateCardScale();
+
+function clearTypingEffect() {
+    if (typingTimer) {
+        clearTimeout(typingTimer);
+        typingTimer = null;
+    }
+    if (buttonShowTimer) {
+        clearTimeout(buttonShowTimer);
+        buttonShowTimer = null;
+    }
+}
 
 function effectWrite() {
     const boxLetter = document.querySelector(".letterContent");
@@ -60,41 +79,30 @@ function effectWrite() {
     boxLetter.textContent = "";
     if (galleryBtn) galleryBtn.classList.remove("show");
 
-    if (typingInterval) {
-        clearInterval(typingInterval);
-        typingInterval = null;
-    }
-    if (buttonShowTimeout) {
-        clearTimeout(buttonShowTimeout);
-        buttonShowTimeout = null;
-    }
+    clearTypingEffect();
 
-    let charIndex = 0;
     const totalLen = letterContent.length;
+    let charIndex = 0;
 
-    typingInterval = setInterval(() => {
+    function typeNextChar() {
         if (charIndex < totalLen) {
-            boxLetter.textContent = letterContent.slice(0, charIndex + 1);
             charIndex++;
-
-            // Batch scroll updates to avoid layout thrashing on every tick
-            if (rightContent && (charIndex % 3 === 0 || charIndex === totalLen)) {
+            boxLetter.textContent = letterContent.slice(0, charIndex);
+            if (rightContent) {
                 rightContent.scrollTop = rightContent.scrollHeight;
             }
-        } else {
-            clearInterval(typingInterval);
-            typingInterval = null;
-
-            if (galleryBtn) {
-                buttonShowTimeout = setTimeout(() => {
-                    galleryBtn.classList.add("show");
-                    if (rightContent) {
-                        rightContent.scrollTop = rightContent.scrollHeight;
-                    }
-                }, 350);
-            }
+            typingTimer = setTimeout(typeNextChar, durationWrite);
+        } else if (galleryBtn) {
+            buttonShowTimer = setTimeout(() => {
+                galleryBtn.classList.add("show");
+                if (rightContent) {
+                    rightContent.scrollTop = rightContent.scrollHeight;
+                }
+            }, 400);
         }
-    }, durationWrite);
+    }
+
+    typeNextChar();
 }
 
 function createPhotoRain() {
@@ -102,25 +110,23 @@ function createPhotoRain() {
     if (!rainBox) return;
     rainBox.innerHTML = "";
 
-    const heartSymbols = ["💖", "💕", "🌸", "✨", "❤️", "🌹"];
-    const isMobile = window.innerWidth < 768;
-    const totalCount = isMobile ? 14 : 26;
-    const heartCount = isMobile ? 16 : 30;
-
     const fragment = document.createDocumentFragment();
+    const heartSymbols = ["💖", "💕", "🌸", "✨", "❤️", "🌹"];
+    const totalCount = 28;
 
     for (let i = 0; i < totalCount; i++) {
         const imgSrc = galleryImages[i % galleryImages.length];
         const photoItem = document.createElement("div");
         photoItem.className = "fallingPhotoItem";
+        photoItem.dataset.src = imgSrc;
 
-        const leftPos = (i * (90 / totalCount) + Math.random() * 4).toFixed(1);
+        const leftPos = (i * (92 / totalCount) + Math.random() * 4).toFixed(1);
         const duration = (6 + Math.random() * 5).toFixed(1);
-        const delay = (Math.random() * 6).toFixed(1);
-        const startRot = (-16 + Math.random() * 32).toFixed(1);
-        const midRot = (-16 + Math.random() * 32).toFixed(1);
-        const endRot = (-16 + Math.random() * 32).toFixed(1);
-        const sway = (-30 + Math.random() * 60).toFixed(1);
+        const delay = (Math.random() * 7).toFixed(1);
+        const startRot = (-18 + Math.random() * 36).toFixed(1);
+        const midRot = (-18 + Math.random() * 36).toFixed(1);
+        const endRot = (-18 + Math.random() * 36).toFixed(1);
+        const sway = (-35 + Math.random() * 70).toFixed(1);
 
         photoItem.style.left = `${leftPos}%`;
         photoItem.style.animationDuration = `${duration}s`;
@@ -134,25 +140,19 @@ function createPhotoRain() {
         img.src = imgSrc;
         img.alt = "Kỉ niệm";
         img.decoding = "async";
-        img.loading = "eager";
         photoItem.appendChild(img);
-
-        photoItem.addEventListener("click", (e) => {
-            e.stopPropagation();
-            zoomPhoto(imgSrc);
-        });
 
         fragment.appendChild(photoItem);
     }
 
-    for (let j = 0; j < heartCount; j++) {
+    for (let j = 0; j < 35; j++) {
         const heart = document.createElement("div");
         heart.className = "fallingHeartItem";
         heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
-        heart.style.left = `${(Math.random() * 94).toFixed(1)}%`;
+        heart.style.left = `${(Math.random() * 95).toFixed(1)}%`;
         heart.style.animationDuration = `${(4 + Math.random() * 5).toFixed(1)}s`;
-        heart.style.animationDelay = `${(Math.random() * 5).toFixed(1)}s`;
-        heart.style.setProperty("--sway-h", `${(-20 + Math.random() * 40).toFixed(1)}px`);
+        heart.style.animationDelay = `${(Math.random() * 6).toFixed(1)}s`;
+        heart.style.setProperty("--sway-h", `${(-25 + Math.random() * 50).toFixed(1)}px`);
         fragment.appendChild(heart);
     }
 
@@ -187,14 +187,12 @@ function stopPhotoRain() {
     if (!modal) return;
     modal.classList.remove("active");
     closeZoom();
-
-    // Clean up elements after fade out to release memory on mobile
     setTimeout(() => {
-        const rainBox = document.getElementById("photoRainBox");
-        if (rainBox && !modal.classList.contains("active")) {
-            rainBox.innerHTML = "";
+        if (!modal.classList.contains("active")) {
+            const rainBox = document.getElementById("photoRainBox");
+            if (rainBox) rainBox.innerHTML = "";
         }
-    }, 450);
+    }, 500);
 }
 
 function toggleRainPlay() {
@@ -202,22 +200,22 @@ function toggleRainPlay() {
     const toggleBtn = document.getElementById("photoRainToggleBtn");
     isRainPlaying = !isRainPlaying;
 
-    const playState = isRainPlaying ? "running" : "paused";
-    for (let i = 0; i < items.length; i++) {
-        items[i].style.animationPlayState = playState;
-    }
+    items.forEach(item => {
+        item.style.animationPlayState = isRainPlaying ? "running" : "paused";
+    });
 
     if (toggleBtn) {
         toggleBtn.textContent = isRainPlaying ? "⏸ Tạm dừng" : "▶ Tiếp tục";
     }
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("load", () => {
     updateCardScale();
+    preloadGalleryImages();
     setTimeout(() => {
         const container = document.querySelector(".container");
         if (container) container.classList.add("active");
-    }, 400);
+    }, 500);
 });
 
 const openBtn = document.querySelector(".openBtn");
@@ -238,22 +236,15 @@ if (cardValentine) {
         cardValentine.classList.toggle("open");
 
         if (cardValentine.classList.contains("open")) {
-            setTimeout(effectWrite, 450);
+            setTimeout(effectWrite, 500);
         } else {
-            if (typingInterval) {
-                clearInterval(typingInterval);
-                typingInterval = null;
-            }
-            if (buttonShowTimeout) {
-                clearTimeout(buttonShowTimeout);
-                buttonShowTimeout = null;
-            }
+            clearTypingEffect();
             const galleryBtn = document.getElementById("galleryBtn");
             if (galleryBtn) galleryBtn.classList.remove("show");
             setTimeout(() => {
                 const boxLetter = document.querySelector(".letterContent");
                 if (boxLetter) boxLetter.textContent = "";
-            }, 800);
+            }, 1000);
         }
     });
 }
@@ -266,6 +257,17 @@ if (galleryBtn) {
     });
 }
 
+const photoRainBox = document.getElementById("photoRainBox");
+if (photoRainBox) {
+    photoRainBox.addEventListener("click", (e) => {
+        const photoItem = e.target.closest(".fallingPhotoItem");
+        if (photoItem && photoItem.dataset.src) {
+            e.stopPropagation();
+            zoomPhoto(photoItem.dataset.src);
+        }
+    });
+}
+
 const photoRainCloseBtn = document.getElementById("photoRainCloseBtn");
 if (photoRainCloseBtn) photoRainCloseBtn.addEventListener("click", stopPhotoRain);
 
@@ -273,19 +275,15 @@ const photoRainOverlay = document.getElementById("photoRainOverlay");
 if (photoRainOverlay) photoRainOverlay.addEventListener("click", stopPhotoRain);
 
 const photoRainToggleBtn = document.getElementById("photoRainToggleBtn");
-if (photoRainToggleBtn) {
-    photoRainToggleBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        toggleRainPlay();
-    });
-}
+if (photoRainToggleBtn) photoRainToggleBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleRainPlay();
+});
 
 const photoZoomClose = document.getElementById("photoZoomClose");
 if (photoZoomClose) photoZoomClose.addEventListener("click", closeZoom);
 
 const photoZoomModal = document.getElementById("photoZoomModal");
-if (photoZoomModal) {
-    photoZoomModal.addEventListener("click", (e) => {
-        if (e.target === photoZoomModal) closeZoom();
-    });
-}
+if (photoZoomModal) photoZoomModal.addEventListener("click", (e) => {
+    if (e.target === photoZoomModal) closeZoom();
+});
