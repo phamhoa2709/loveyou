@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <link rel="preload" href="./img/paperHeart.webp" as="image">
+    <link rel="preload" href="./img/artHeart.webp" as="image">
     <link rel="stylesheet" href="./main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,12 +15,12 @@
 
 <body>
     <div class="container">
-        <img class="paperHeart paperHeart1" style="--time: 0s" src="./img/paperHeart.webp" alt="">
-        <img class="paperHeart paperHeart2" style="--time: 1s" src="./img/paperHeart.webp" alt="">
-        <img class="paperHeart paperHeart3" style="--time: 2.5s" src="./img/paperHeart.webp" alt="">
-        <img class="paperHeart paperHeart4" style="--time: 4s" src="./img/paperHeart.webp" alt="">
-        <img class="paperHeart paperHeart5" style="--time: 2s" src="./img/paperHeart.webp" alt="">
-        <img class="paperHeart paperHeart6" style="--time: 3s" src="./img/paperHeart.webp" alt="">
+        <img class="paperHeart paperHeart1" style="--time: 0s" src="./img/paperHeart.webp" alt="" decoding="async">
+        <img class="paperHeart paperHeart2" style="--time: 1s" src="./img/paperHeart.webp" alt="" decoding="async">
+        <img class="paperHeart paperHeart3" style="--time: 2.5s" src="./img/paperHeart.webp" alt="" decoding="async">
+        <img class="paperHeart paperHeart4" style="--time: 4s" src="./img/paperHeart.webp" alt="" decoding="async">
+        <img class="paperHeart paperHeart5" style="--time: 2s" src="./img/paperHeart.webp" alt="" decoding="async">
+        <img class="paperHeart paperHeart6" style="--time: 3s" src="./img/paperHeart.webp" alt="" decoding="async">
 
         <div class="boxTitle">
             <p class="firstTitle partTitle">Happy</p>
@@ -46,7 +48,7 @@
                     <p class="des">Hãy chạm vào tấm thiệp</p>
                 </div>
                 <div class="leftBack">
-                    <img class="artHeart" src="./img/artHeart.webp" alt="">
+                    <img class="artHeart" src="./img/artHeart.webp" alt="" decoding="async">
                 </div>
             </div>
 
@@ -69,7 +71,7 @@
 
             <div class="photoZoomModal" id="photoZoomModal">
                 <div class="photoZoomContent">
-                    <img class="photoZoomImg" id="photoZoomImg" src="" alt="Ảnh kỉ niệm">
+                    <img class="photoZoomImg" id="photoZoomImg" src="" alt="Ảnh kỉ niệm" decoding="async">
                     <button class="photoZoomClose" id="photoZoomClose">✕</button>
                 </div>
             </div>

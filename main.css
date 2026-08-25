@@ -4,6 +4,7 @@
     box-sizing: border-box;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 :root {
@@ -14,6 +15,7 @@ html, body {
     height: 100%;
     width: 100%;
     overflow: hidden;
+    touch-action: manipulation;
 }
 
 .container {
@@ -23,16 +25,20 @@ html, body {
     width: 100%;
     background-color: #fc6885;
     overflow: hidden;
+    contain: layout paint;
 }
 
+/* ================= PAPER HEARTS ================= */
 .paperHeart {
     position: absolute;
-    height: clamp(50px, 8vw, 100px);
-    top: 80%;
+    height: clamp(45px, 7.5vw, 90px);
+    top: 85%;
     opacity: 0;
-    filter: drop-shadow(0 0 20px white);
-    animation: hiddenHeart 3.1s linear forwards, flyHeart 4s ease-in-out calc(var(--time) + 3.1s) infinite;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.85));
+    animation: hiddenHeart 3.1s linear forwards, flyHeart 4.2s ease-in-out calc(var(--time) + 3.1s) infinite;
     pointer-events: none;
+    will-change: transform, opacity;
+    transform: translate3d(0, 0, 0);
 }
 
 .paperHeart1 { left: 5%; }
@@ -42,6 +48,30 @@ html, body {
 .paperHeart5 { left: 75%; }
 .paperHeart6 { left: 90%; }
 
+@keyframes hiddenHeart {
+    0%, 95% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes flyHeart {
+    0% {
+        transform: translate3d(0, 0, 0);
+        opacity: 0.9;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate3d(0, -115vh, 0);
+        opacity: 0;
+    }
+}
+
+/* ================= CLOUDS ================= */
 .boxCloud {
     position: absolute;
     bottom: 0;
@@ -50,135 +80,93 @@ html, body {
     width: 100%;
     background-color: transparent;
     pointer-events: none;
+    contain: layout paint;
 }
 
 .container .cloud,
 .container .cloud1,
 .container .cloud2 {
     position: absolute;
-    top: 120%;
-    left: -50px;
-}
-
-.container.active.close .btnBox {
-    animation: disappearBtn 1s ease-in-out forwards;
-}
-
-.container.active.close .boxTitle {
-    animation: disappearBoxTitle 1s ease-in-out forwards;
-}
-
-@keyframes disappearBtn {
-    from {
-        top: 50%;
-    }
-    to {
-        top: 150%;
-    }
-}
-
-@keyframes disappearBoxTitle {
-    from {
-        top: 10%;
-    }
-    to {
-        top: -50%;
-    }
-}
-
-.container.active .cloud {
-    position: absolute;
-    top: 0;
     left: -50px;
     height: 200px;
     width: 200px;
-    background-color: #ffb3c1;
     border-radius: 50%;
+    will-change: transform;
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.8s ease;
+}
+
+.container .cloud {
+    top: 0;
+    background-color: #ffb3c1;
     box-shadow: 120px -20px #ffb3c1, 240px -40px #ffb3c1, 360px -20px #ffb3c1,
     480px 0px #ffb3c1, 600px -10px #ffb3c1, 720px 10px #ffb3c1, 840px 20px #ffb3c1, 
     960px 0px #ffb3c1, 1080px 40px #ffb3c1, 1200px 20px #ffb3c1, 1320px 0px #ffb3c1,
     1440px -20px #ffb3c1, 1560px 0px #ffb3c1, 1680px 20px #ffb3c1, 1800px 0px #ffb3c1;
-    transition: .8s;
+    transform: translate3d(0, 160%, 0);
     transition-delay: 2.2s;
-    animation: animateCloud 3s ease-in-out 1s infinite;
 }
 
-@keyframes animateCloud {
-    0%, 100% {
-        top: 0;
-    }
-    25%, 75% {
-        top: 10px;
-    }
-    50% {
-        top: -10px;
-    }
-}
-
-@keyframes animateCloud1 {
-    0%, 100% {
-        top: 75px;
-    }
-    25%, 75% {
-        top: 85px;
-    }
-    50% {
-        top: 65px;
-    }
-}
-
-@keyframes animateCloud2 {
-    0%, 100% {
-        top: 150px;
-    }
-    25%, 75% {
-        top: 160px;
-    }
-    50% {
-        top: 140px;
-    }
-}
-
-.container.active .cloud1 {
-    position: absolute;
+.container .cloud1 {
     top: 75px;
-    left: -50px;
-    height: 200px;
-    width: 200px;
     background-color: #ffccd5;
-    border-radius: 50%;
     box-shadow: 120px -20px #ffccd5, 240px -40px #ffccd5, 360px -20px #ffccd5,
     480px 0px #ffccd5, 600px -10px #ffccd5, 720px 10px #ffccd5, 840px 20px #ffccd5, 
     960px 0px #ffccd5, 1080px 40px #ffccd5, 1200px 20px #ffccd5, 1320px 0px #ffccd5,
     1440px -20px #ffccd5, 1560px 0px #ffccd5, 1680px 20px #ffccd5, 1800px 0px #ffccd5;
-    transition: .8s;
+    transform: translate3d(0, 160%, 0);
     transition-delay: 1.3s;
-    animation: animateCloud1 3s ease-in-out 1.5s infinite;
 }
 
-.container.active .cloud2 {
-    position: absolute;
+.container .cloud2 {
     top: 150px;
-    left: -50px;
-    height: 200px;
-    width: 200px;
     background-color: white;
-    border-radius: 50%;
     box-shadow: 120px -20px white, 240px -20px white, 360px -20px white,
     480px 0px white, 600px -10px white, 720px 10px white, 840px 20px white, 
     960px 0px white, 1080px 40px white, 1200px 20px white, 1320px 0px white,
     1440px -20px white, 1560px 0px white, 1680px 20px white, 1800px 0px white;
-    transition: .8s;
+    transform: translate3d(0, 160%, 0);
     transition-delay: .5s;
-    animation: animateCloud2 3s ease-in-out 2s infinite;
 }
 
+.container.active .cloud {
+    transform: translate3d(0, 0, 0);
+    animation: animateCloud 3.2s ease-in-out 3s infinite;
+}
+
+.container.active .cloud1 {
+    transform: translate3d(0, 0, 0);
+    animation: animateCloud1 3.2s ease-in-out 2.1s infinite;
+}
+
+.container.active .cloud2 {
+    transform: translate3d(0, 0, 0);
+    animation: animateCloud2 3.2s ease-in-out 1.3s infinite;
+}
+
+@keyframes animateCloud {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    25%, 75% { transform: translate3d(0, 10px, 0); }
+    50% { transform: translate3d(0, -10px, 0); }
+}
+
+@keyframes animateCloud1 {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    25%, 75% { transform: translate3d(0, 10px, 0); }
+    50% { transform: translate3d(0, -10px, 0); }
+}
+
+@keyframes animateCloud2 {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    25%, 75% { transform: translate3d(0, 10px, 0); }
+    50% { transform: translate3d(0, -10px, 0); }
+}
+
+/* ================= TITLE ================= */
 .boxTitle {
     position: absolute;
-    top: 120%;
+    top: 10%;
     left: 50%;
-    transform: translateX(-50%);
-    font-family: "Rubik Glitch Pop", system-ui;
+    font-family: "Rubik Glitch Pop", system-ui, -apple-system, sans-serif;
     font-weight: 400;
     font-size: clamp(28px, 6.5vw, 95px);
     color: pink;
@@ -189,9 +177,12 @@ html, body {
     align-items: center;
     flex-direction: column;
     text-align: center;
-    text-shadow: 0 0 20px white;
-    animation: appearTitle 2s linear 3.1s forwards, floatingWords 4s ease-in-out infinite;
+    text-shadow: 0 0 16px white;
+    opacity: 0;
+    transform: translate3d(-50%, 140px, 0);
+    animation: appearTitle 1.8s cubic-bezier(0.2, 0.8, 0.3, 1) 3.1s forwards, floatingWords 4s ease-in-out 4.9s infinite;
     pointer-events: none;
+    will-change: transform, opacity;
 }
 
 .partTitle {
@@ -199,30 +190,96 @@ html, body {
     word-break: break-word;
 }
 
+@keyframes appearTitle {
+    to {
+        opacity: 1;
+        transform: translate3d(-50%, 0, 0);
+    }
+}
+
+@keyframes floatingWords {
+    0%, 100% {
+        transform: translate3d(-50%, 0, 0);
+    }
+    25% {
+        transform: translate3d(-50%, -20px, 0);
+    }
+    50% {
+        transform: translate3d(-50%, 18px, 0);
+    }
+    75% {
+        transform: translate3d(-50%, 0, 0);
+    }
+}
+
+.container.active.close .boxTitle {
+    animation: disappearBoxTitle 0.8s ease-in-out forwards !important;
+}
+
+@keyframes disappearBoxTitle {
+    from {
+        opacity: 1;
+        transform: translate3d(-50%, 0, 0);
+    }
+    to {
+        opacity: 0;
+        transform: translate3d(-50%, -120px, 0);
+    }
+}
+
+/* ================= OPEN BUTTON ================= */
 .container .btnBox {
     position: absolute;
-    top: 150%;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(clamp(0.65, 2.5vw + 0.4, 1));
+    transform: translate3d(-50%, 120vh, 0) scale(clamp(0.68, 2.5vw + 0.4, 1));
     height: 160px;
     width: 400px;
-    opacity: 1;
-    pointer-events: auto;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
 }
 
 .container.active .btnBox {
-    opacity: 1;
-    transition: 1s;
-    transition-delay: 5s;
-    animation: appearBtnBox 2s ease-in-out 5s forwards, animateOpenBtn 2s ease-in-out 5s infinite;
+    pointer-events: auto;
+    animation: appearBtnBox 1.6s cubic-bezier(0.2, 0.8, 0.3, 1) 4.8s forwards, animateOpenBtn 2s ease-in-out 6.4s infinite;
 }
 
 @keyframes appearBtnBox {
     from {
-        top: 150%;
+        opacity: 0;
+        transform: translate3d(-50%, 100vh, 0) scale(clamp(0.68, 2.5vw + 0.4, 1));
     }
     to {
-        top: 50%;
+        opacity: 1;
+        transform: translate3d(-50%, -50%, 0) scale(clamp(0.68, 2.5vw + 0.4, 1));
+    }
+}
+
+@keyframes animateOpenBtn {
+    0%, 25%, 100% {
+        transform: translate3d(-50%, -50%, 0) scale(clamp(0.68, 2.5vw + 0.4, 1));
+    }
+    50% {
+        transform: translate3d(-50%, calc(-50% + 5px), 0) scale(clamp(0.68, 2.5vw + 0.4, 1));
+    }
+    75% {
+        transform: translate3d(-50%, calc(-50% - 5px), 0) scale(clamp(0.68, 2.5vw + 0.4, 1));
+    }
+}
+
+.container.active.close .btnBox {
+    animation: disappearBtn 0.8s ease-in-out forwards !important;
+}
+
+@keyframes disappearBtn {
+    from {
+        opacity: 1;
+        transform: translate3d(-50%, -50%, 0) scale(clamp(0.68, 2.5vw + 0.4, 1));
+    }
+    to {
+        opacity: 0;
+        transform: translate3d(-50%, 100vh, 0) scale(clamp(0.68, 2.5vw + 0.4, 1));
     }
 }
 
@@ -259,7 +316,7 @@ html, body {
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
-    font-family: "Rubik Glitch Pop", system-ui;
+    font-family: "Rubik Glitch Pop", system-ui, -apple-system, sans-serif;
     font-weight: 400;
     font-size: clamp(22px, 5vw, 40px);
     color: #fc6885;
@@ -272,46 +329,39 @@ html, body {
     outline: none;
 }
 
-.container.active.open .boxTitle {
-    animation: none;
-    top: -40%;
-}
-
-.container.active.open .btnBox {
-    animation: none;
-    top: 140%;
-}
-
+/* ================= VALENTINE CARD ================= */
 .cardValentine {
     position: absolute;
-    top: 200%;
+    top: 50%;
     left: 50%;
     opacity: 0;
-    transform: translate(-75%, -50%) scale(var(--card-scale, 1));
+    transform: translate3d(-75%, 120vh, 0) scale(var(--card-scale, 1));
     height: 600px;
     width: 800px;
     background-color: transparent;
-    transition: transform .6s cubic-bezier(0.4, 0, 0.2, 1), opacity .5s ease;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     transform-origin: center center;
+    will-change: transform, opacity;
+    pointer-events: none;
 }
 
 .cardValentine.active {
     opacity: 1;
-    top: 50%;
-    transform: translate(-75%, -50%) scale(var(--card-scale, 1));
-    animation: animateCard 1.8s ease-in-out forwards;
+    pointer-events: auto;
+    transform: translate3d(-75%, -50%, 0) scale(var(--card-scale, 1));
+    animation: animateCard 1.5s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
 }
 
 @keyframes animateCard {
     from {
-        top: 200%;
-        transform: translate(-75%, -50%) scale(var(--card-scale, 1));
+        opacity: 0;
+        transform: translate3d(-75%, 100vh, 0) scale(var(--card-scale, 1));
     }
     to {
-        top: 50%;
-        transform: translate(-75%, -50%) scale(var(--card-scale, 1));
+        opacity: 1;
+        transform: translate3d(-75%, -50%, 0) scale(var(--card-scale, 1));
     }
 }
 
@@ -323,9 +373,10 @@ html, body {
     height: 100%;
     width: 50%;
     border-radius: 10px;
-    transition: transform .6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     transform-style: preserve-3d;
     transform-origin: left;
+    will-change: transform;
 }
 
 .cardValentine .left .leftFront {
@@ -343,10 +394,11 @@ html, body {
     border-left: 10px solid #c9413f;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .boxShadow {
-    filter: drop-shadow(0 0 10px white);
+    filter: drop-shadow(0 0 8px white);
     height: fit-content;
     width: fit-content;
 }
@@ -397,7 +449,7 @@ html, body {
     position: absolute;
     top: 0;
     left: 0;
-    transform: rotateY(180deg);
+    transform: rotateY(180deg) translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     background-color: #f35553;
@@ -457,6 +509,7 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    -webkit-overflow-scrolling: touch;
 }
 
 .rightContent::-webkit-scrollbar {
@@ -507,11 +560,11 @@ html, body {
 @keyframes appearGalleryBtn {
     from {
         opacity: 0;
-        transform: translateY(15px) scale(0.85);
+        transform: translate3d(0, 15px, 0) scale(0.85);
     }
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translate3d(0, 0, 0) scale(1);
     }
 }
 
@@ -527,15 +580,14 @@ html, body {
 }
 
 .cardValentine.active.open {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(var(--card-scale, 1));
+    transform: translate3d(-50%, -50%, 0) scale(var(--card-scale, 1));
 }
 
 .cardValentine.active.open .left {
     transform: rotateY(-180deg);
 }
 
+/* ================= PHOTO RAIN MODAL ================= */
 .photoRainModal {
     position: fixed;
     top: 0;
@@ -546,7 +598,7 @@ html, body {
     z-index: 999;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.4s ease;
     overflow: hidden;
 }
 
@@ -561,9 +613,9 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at center, rgba(35, 12, 22, 0.82) 0%, rgba(12, 4, 10, 0.94) 100%);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: radial-gradient(circle at center, rgba(35, 12, 22, 0.88) 0%, rgba(12, 4, 10, 0.95) 100%);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 .photoRainBox {
@@ -578,26 +630,27 @@ html, body {
 
 .fallingPhotoItem {
     position: absolute;
-    top: -200px;
+    top: 0;
     width: clamp(75px, 16vw, 125px);
-    padding: 6px 6px 16px 6px;
+    padding: 5px 5px 14px 5px;
     background: #ffffff;
     border-radius: 6px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 10px rgba(255, 182, 193, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
     cursor: pointer;
     pointer-events: auto;
-    will-change: transform, top;
+    will-change: transform;
     animation-name: fallAnimation;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
     transition: transform 0.2s, box-shadow 0.2s;
     -webkit-tap-highlight-color: transparent;
+    contain: layout paint;
 }
 
-.fallingPhotoItem:hover {
-    transform: scale(1.18) !important;
+.fallingPhotoItem:hover, .fallingPhotoItem:active {
+    transform: scale(1.15) !important;
     z-index: 50 !important;
-    box-shadow: 0 15px 35px rgba(243, 85, 83, 0.7), 0 0 20px white;
+    box-shadow: 0 12px 28px rgba(243, 85, 83, 0.7), 0 0 15px white;
 }
 
 .fallingPhotoItem img {
@@ -610,56 +663,54 @@ html, body {
 
 .fallingHeartItem {
     position: absolute;
-    top: -60px;
-    font-size: clamp(16px, 3.5vw, 28px);
+    top: 0;
+    font-size: clamp(16px, 3.5vw, 26px);
     pointer-events: none;
+    will-change: transform;
     animation-name: fallHeartAnimation;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
     opacity: 0.85;
-    filter: drop-shadow(0 0 8px #ffb3c1);
+    filter: drop-shadow(0 0 5px #ffb3c1);
+    contain: layout paint;
 }
 
 @keyframes fallAnimation {
     0% {
-        top: -200px;
-        transform: translateX(0) rotate(var(--start-rot, 0deg));
+        transform: translate3d(0, -180px, 0) rotate(var(--start-rot, 0deg));
         opacity: 0;
     }
-    8% {
+    6% {
         opacity: 1;
     }
     50% {
-        transform: translateX(var(--sway, 25px)) rotate(var(--mid-rot, 10deg));
+        transform: translate3d(var(--sway, 25px), 55vh, 0) rotate(var(--mid-rot, 10deg));
     }
-    92% {
+    94% {
         opacity: 1;
     }
     100% {
-        top: 108vh;
-        transform: translateX(calc(var(--sway, 25px) * -1)) rotate(var(--end-rot, -10deg));
+        transform: translate3d(calc(var(--sway, 25px) * -1), 112vh, 0) rotate(var(--end-rot, -10deg));
         opacity: 0;
     }
 }
 
 @keyframes fallHeartAnimation {
     0% {
-        top: -60px;
-        transform: translateX(0) rotate(0deg);
+        transform: translate3d(0, -60px, 0) rotate(0deg);
         opacity: 0;
     }
     8% {
         opacity: 0.9;
     }
     50% {
-        transform: translateX(var(--sway-h, 20px)) rotate(45deg);
+        transform: translate3d(var(--sway-h, 20px), 55vh, 0) rotate(45deg);
     }
     92% {
         opacity: 0.9;
     }
     100% {
-        top: 108vh;
-        transform: translateX(calc(var(--sway-h, 20px) * -1)) rotate(-45deg);
+        transform: translate3d(calc(var(--sway-h, 20px) * -1), 112vh, 0) rotate(-45deg);
         opacity: 0;
     }
 }
@@ -671,25 +722,24 @@ html, body {
     transform: translateX(-50%);
     z-index: 100;
     display: flex;
-    gap: 14px;
+    gap: 12px;
     align-items: center;
 }
 
 .photoRainCtrlBtn, .photoRainCloseBtn {
-    padding: 9px 20px;
+    padding: 8px 18px;
     border-radius: 25px;
     font-family: "Pacifico", cursive;
-    font-size: 16px;
+    font-size: 15px;
     border: 1.5px solid rgba(255, 255, 255, 0.4);
-    background: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.25);
     color: white;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     transition: background 0.2s, transform 0.2s;
     outline: none;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 .photoRainCloseBtn {
@@ -698,7 +748,7 @@ html, body {
 }
 
 .photoRainCtrlBtn:hover, .photoRainCloseBtn:hover {
-    transform: scale(1.06);
+    transform: scale(1.05);
 }
 
 .photoZoomModal {
@@ -711,10 +761,10 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(0, 0, 0, 0.78);
+    background: rgba(0, 0, 0, 0.82);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.25s ease;
 }
 
 .photoZoomModal.active {
@@ -726,12 +776,12 @@ html, body {
     position: relative;
     max-width: 90vw;
     max-height: 82vh;
-    padding: 14px 14px 28px 14px;
+    padding: 12px 12px 24px 12px;
     background: white;
-    border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65), 0 0 25px rgba(252, 104, 133, 0.5);
+    border-radius: 12px;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.6), 0 0 20px rgba(252, 104, 133, 0.4);
     transform: scale(0.85);
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -745,90 +795,44 @@ html, body {
     max-width: 100%;
     max-height: 72vh;
     object-fit: contain;
-    border-radius: 8px;
+    border-radius: 6px;
     display: block;
 }
 
 .photoZoomClose {
     position: absolute;
-    top: -16px;
-    right: -16px;
-    width: 38px;
-    height: 38px;
+    top: -14px;
+    right: -14px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: #fc6885;
     border: 2px solid white;
     color: white;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
     outline: none;
     -webkit-tap-highlight-color: transparent;
-}
-
-@keyframes appearTitle {
-    to {
-        top: 10%;
-    }
-}
-
-@keyframes floatingWords {
-    0%, 100% {
-        transform: translateX(-50%) translateY(0);
-    }
-    25% {
-        transform: translateX(-50%) translateY(-25px);
-    }
-    50% {
-        transform: translateX(-50%) translateY(25px);
-    }
-    75% {
-        transform: translateX(-50%) translateY(0);
-    }
-}
-
-@keyframes flyHeart {
-    to {
-        top: -20%;
-    }
-}
-
-@keyframes hiddenHeart {
-    0%, 95% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-@keyframes animateOpenBtn {
-    0%, 25%, 100% {
-        transform: translate(-50%, -50%);
-    }
-    50% {
-        transform: translate(-50%, calc(-50% + 4px));
-    }
-    75% {
-        transform: translate(-50%, calc(-50% - 4px));
-    }
+    touch-action: manipulation;
 }
 
 @media (max-width: 600px) {
     .boxTitle {
-        top: 120%;
-    }
-    @keyframes appearTitle {
-        to {
-            top: 6%;
-        }
+        top: 6%;
     }
     .photoRainCtrlBtn, .photoRainCloseBtn {
         padding: 7px 14px;
         font-size: 14px;
+    }
+    .cardValentine .left .leftFront,
+    .cardValentine .left .leftBack,
+    .cardValentine .right {
+        border-left-width: 6px;
+        border-right-width: 6px;
     }
 }
