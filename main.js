@@ -3,6 +3,11 @@ const durationWrite = 25;
 let typingTimer = null;
 let buttonShowTimer = null;
 
+const musicSrc = "./music.mp3";
+let bgMusic = null;
+let isRainPlaying = true;
+let resizeRaf = null;
+
 const galleryImages = [
     "./img/anh/IMG_4603.jpg",
     "./img/anh/IMG_4698.JPG",
@@ -25,8 +30,76 @@ const galleryImages = [
     "./img/anh/IMG_5851.jpg"
 ];
 
-let isRainPlaying = true;
-let resizeRaf = null;
+function initBgMusic() {
+    if (!bgMusic) {
+        bgMusic = document.getElementById("bgMusic");
+        if (!bgMusic) {
+            bgMusic = new Audio(musicSrc);
+            bgMusic.id = "bgMusic";
+            document.body.appendChild(bgMusic);
+        }
+        bgMusic.loop = true;
+        bgMusic.volume = 1.0;
+    }
+    return bgMusic;
+}
+
+function unlockAudio() {
+    const audio = initBgMusic();
+    if (audio) {
+        audio.load();
+    }
+}
+document.addEventListener("click", unlockAudio, { once: true });
+document.addEventListener("touchstart", unlockAudio, { once: true });
+
+function playMusic() {
+    const audio = initBgMusic();
+    if (!audio) return;
+    audio.muted = false;
+    audio.volume = 1.0;
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+        playPromise
+            .then(() => {
+                updateMusicBtnState(true);
+            })
+            .catch((err) => {
+                console.warn("Không thể tự động phát nhạc:", err);
+                updateMusicBtnState(false);
+            });
+    }
+}
+
+function pauseMusic() {
+    if (bgMusic) {
+        bgMusic.pause();
+        updateMusicBtnState(false);
+    }
+}
+
+function toggleMusic() {
+    const audio = initBgMusic();
+    if (!audio) return;
+    if (audio.paused) {
+        audio.play().then(() => {
+            updateMusicBtnState(true);
+        }).catch(err => {
+            console.error("Lỗi phát nhạc:", err);
+            updateMusicBtnState(false);
+        });
+    } else {
+        audio.pause();
+        updateMusicBtnState(false);
+    }
+}
+
+function updateMusicBtnState(isPlaying) {
+    const musicBtn = document.getElementById("photoRainMusicBtn");
+    if (musicBtn) {
+        musicBtn.textContent = isPlaying ? "🎵 Nhạc: Bật" : "🔇 Nhạc: Tắt";
+    }
+}
 
 function preloadGalleryImages() {
     galleryImages.forEach((src) => {
@@ -180,6 +253,8 @@ function startPhotoRain() {
     isRainPlaying = true;
     const toggleBtn = document.getElementById("photoRainToggleBtn");
     if (toggleBtn) toggleBtn.textContent = "⏸ Tạm dừng";
+
+    playMusic();
 }
 
 function stopPhotoRain() {
@@ -187,6 +262,9 @@ function stopPhotoRain() {
     if (!modal) return;
     modal.classList.remove("active");
     closeZoom();
+
+    pauseMusic();
+
     setTimeout(() => {
         if (!modal.classList.contains("active")) {
             const rainBox = document.getElementById("photoRainBox");
@@ -203,6 +281,12 @@ function toggleRainPlay() {
     items.forEach(item => {
         item.style.animationPlayState = isRainPlaying ? "running" : "paused";
     });
+
+    if (isRainPlaying) {
+        playMusic();
+    } else {
+        pauseMusic();
+    }
 
     if (toggleBtn) {
         toggleBtn.textContent = isRainPlaying ? "⏸ Tạm dừng" : "▶ Tiếp tục";
@@ -221,6 +305,7 @@ window.addEventListener("load", () => {
 const openBtn = document.querySelector(".openBtn");
 if (openBtn) {
     openBtn.addEventListener("click", () => {
+        unlockAudio();
         const card = document.querySelector(".cardValentine");
         const container = document.querySelector(".container");
         if (card) card.classList.add("active");
@@ -232,6 +317,7 @@ const cardValentine = document.querySelector(".cardValentine");
 if (cardValentine) {
     cardValentine.addEventListener("click", (e) => {
         if (e.target && e.target.id === "galleryBtn") return;
+        unlockAudio();
 
         cardValentine.classList.toggle("open");
 
@@ -253,6 +339,7 @@ const galleryBtn = document.getElementById("galleryBtn");
 if (galleryBtn) {
     galleryBtn.addEventListener("click", (e) => {
         e.stopPropagation();
+        unlockAudio();
         startPhotoRain();
     });
 }
@@ -265,6 +352,14 @@ if (photoRainBox) {
             e.stopPropagation();
             zoomPhoto(photoItem.dataset.src);
         }
+    });
+}
+
+const photoRainMusicBtn = document.getElementById("photoRainMusicBtn");
+if (photoRainMusicBtn) {
+    photoRainMusicBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleMusic();
     });
 }
 

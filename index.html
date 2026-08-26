@@ -63,6 +63,7 @@
             <div class="photoRainBox" id="photoRainBox"></div>
 
             <div class="photoRainControls">
+                <button class="photoRainCtrlBtn" id="photoRainMusicBtn">🎵 Nhạc: Bật</button>
                 <button class="photoRainCtrlBtn" id="photoRainToggleBtn">⏸ Tạm dừng</button>
                 <button class="photoRainCloseBtn" id="photoRainCloseBtn">✕ Đóng</button>
             </div>
@@ -74,6 +75,11 @@
                 </div>
             </div>
         </div>
+
+        <audio id="bgMusic" preload="auto" loop playsinline>
+            <source src="./music.mp3" type="audio/mpeg">
+            <source src="./music.mp3" type="audio/mp3">
+        </audio>
     </div>
 
     <script src="./main.js"></script>
